@@ -287,4 +287,4 @@ plt.show()
 plt.savefig('output1.png', dpi=300)
 ```
 
-![output1](http://url/a.png)
+![output1](https://github.com/HavaShabtai/HavaShabtai.github.io/blob/master/output1.png)
