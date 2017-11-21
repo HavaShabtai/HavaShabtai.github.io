@@ -112,9 +112,9 @@ PART II: Run the classifier on the provided test file and calculate the 'AUC_sco
 ## PART I: Build the classifier and run it on the provided training data
 
 ```python
-# 1. Import all the needed packeges.
+# 1. Import all the needed packages.
 
-# needed
+# needed packages
 %matplotlib notebook
 import numpy as np
 import pandas as pd
@@ -139,3 +139,152 @@ from sklearn.metrics import roc_curve, auc
 <br>
 Next, I am going to handle the train.csv file. Some of the columns are redundant for the feature space and the label space, since they don't exist in the test.csv file, so they will be deleted.  Also, as mentioned, some of the columns have mixed type, which makes the reading of file longer and problematic, so I will use 'dtype' in the 'pd.read_csv' function.
 <br>
+
+```python
+# 2. read the needed files into a dataframe, then organize and fix the dataframes from small problems, 
+# i.e. mixed types value an etc. Afterward build the feature space and the label space.
+
+# read the training data of blight ticket compliance in Detroit into a dataframe 
+df = pd.read_csv('train.csv', header=0, sep=',', encoding='cp1252',  
+                 dtype={'zip_code': str, 'non_us_str_code': str, 'grafitti_status': str, 'violator_name':str, 
+                        'mailing_address_str_number': str}) 
+# since: DtypeWarning: Columns (11,12,31) have mixed types. Specify dtype option on import or set low_memory=False.
+#  interactivity=interactivity, compiler=compiler, result=result)
+# we have to specify the type, i.e  dtype={'zip_code': str, 'non_us_str_code': str, 'grafitti_status': str}
+# encoding='latin1', encoding='iso-8859-1' or encoding='cp1252'; encoding = utf-8 these the various encodings found on Windows.
+
+# Select rows where ticket receiver is Responsible i.e. df.compliance = 0 or 1 since, 'Not responsible' doesn't exists in the test file
+df = df[(df['compliance'] == 0.0) | (df['compliance'] == 1.0)]
+
+# handeling the unwanted charachter: remove '>' in 'mailing_address_str_name'
+df['mailing_address_str_name'] = df['mailing_address_str_name'].str.replace(r"\>"," ")
+df['violator_name'] = df['violator_name'].str.replace(r"\>"," ")
+
+
+# let's see the data
+#df.head(20)
+# there are some mixed types we handled
+# df.loc[244227, 'zip_code'] = N9A2H9
+# df.loc[177864, 'non_us_str_code'] = , Australia
+# df.loc[12600:12700, 'mailing_address_str_name'] # make sure there are no '>'
+
+# Build the feature space and the label space, ignore redundant columns
+X = df.loc[:,'ticket_id':'judgment_amount'] # selects all rows and all columns beginning at 'ticket_id' up to and including 'judgment_amount' 
+X['grafitti_status'] = df['grafitti_status'] # add 'grafitti_status''
+y = df.iloc[:,-1]  # only select the last column 'compliance'
+
+# let's see the data
+# X.head()
+# y.head()
+```
+
+<br>
+Now, I am going to appraise the problem beforehand to decide whether it is an imbalanced classification problem or not. The importance of this step is to decide which metric should one use in appraising the classifier.
+<br>
+
+```python
+# 3. Appraise the problem beforehand to decide whether it is an imbalanced classification problem or not.
+
+# appraise the amount of payed tickets relative to non-payed tickets 
+# count the instances in y according to bins
+y = y.astype(int)
+y_bincount = np.bincount(y)
+# array([148283,  11597], dtype=int64) # Negative class (0) is the most frequent class
+payed_percentage = y_bincount[1] / y.count()
+# payed_percentage
+# 0.072535651738804108
+```
+
+<br>
+I this case, I have received an imbalanced classification problems. In general, for imbalanced classification problems, one should use metrics other than accuracy. I'll use AUROC = area under the ROC curve and our goal is: AUROC > 0.7.
+<br>
+
+<br>
+In this stage, I'd like to organize the feature space and the label space appropriately and engage the classifier. However, the data that I have received is of a mixed type: str, int and float. I need a classifier that can handle a binary classification case with feature space that is not only numbers to a medium size data. A natural choice would be Gradient Boosted Decision Trees.
+<br>
+
+```python
+# 4. Decide which classifier to use, organize the feature space and the label space appropriately and engage the classifier.
+
+# can't pass str to the fit() method of GBTC hence encode every labels in the df with value between 0 and n_classes-1 
+
+# Missing values is taken as float, whereas others are str. replace the NaN to ''
+X = X.fillna('')
+
+# limit to categorical data using df.select_dtypes()
+X_1 = X.select_dtypes(include=[object])
+# X.head()
+
+# encode labels with value between 0 and n_classes-1.
+le = preprocessing.LabelEncoder()
+
+
+# fit and transform
+# use df.apply() to apply le.fit_transform to all columns
+X_2 = X_1.apply(le.fit_transform)
+# X_2.head(50)
+
+# add the rest of the data that is already in a float or int type
+float_columns = ['ticket_id', 'violation_street_number', 'fine_amount', 'admin_fee', 'state_fee', 'late_fee',
+                 'discount_amount', 'clean_up_cost', 'judgment_amount']
+float_columns = ['fine_amount', 'admin_fee', 'state_fee', 'late_fee',
+                 'discount_amount', 'clean_up_cost', 'judgment_amount']
+X_2[float_columns] = X[float_columns]
+
+# Let's see the data
+# X_2.head(50)
+
+
+
+############################## building the gradient boosted model ###############################
+
+# split into train and test with option to reconstruct the splitting (random_state=0)
+X_2_train, X_2_test, y_train, y_test = train_test_split(X_2, y, random_state=0) 
+
+# create the GradientBoostingClassifier object and fit it to the training data in the usual way
+# The default parameters: learning rate=0.1, n_estimators=100 gives the number of trees and max depth=3.
+grd = GradientBoostingClassifier()
+grd.fit(X_2_train, y_train)
+```
+
+```
+GradientBoostingClassifier(criterion='friedman_mse', init=None,
+              learning_rate=0.1, loss='deviance', max_depth=3,
+              max_features=None, max_leaf_nodes=None,
+              min_impurity_split=1e-07, min_samples_leaf=1,
+              min_samples_split=2, min_weight_fraction_leaf=0.0,
+              n_estimators=100, presort='auto', random_state=None,
+              subsample=1.0, verbose=0, warm_start=False)
+```
+
+<br>
+Once the classifier is fitted, I would like to see how well my classifier is doing, hence I will calculate the AUC_score of the classifier on the training data.
+<br>
+
+```python
+# 5. Plot the ROC for the y_test that was splitted from the training data train.csv file.
+
+# calculate the needed information in order to get the AUC_score
+y_pred_grd = grd.predict_proba(X_2_test)[:, 1]
+fpr_grd, tpr_grd, _ = roc_curve(y_test, y_pred_grd)
+roc_auc_grd = auc(fpr_grd, tpr_grd)
+
+################################################# plot the ROC for the y_test #####################
+
+plt.figure()
+plt.xlim([-0.01, 1.00])
+plt.ylim([-0.01, 1.01])
+plt.plot(fpr_grd, tpr_grd, lw=3, label='LogRegr ROC curve (area = {:0.2f})'.format(roc_auc_grd))
+plt.xlabel('False Positive Rate', fontsize=16)
+plt.ylabel('True Positive Rate', fontsize=16)
+plt.title('ROC curve (blight ticket compliance in Detroit)', fontsize=16)
+plt.legend(loc='lower right', fontsize=13)
+# The dotted line here is the classifier curve that secretly results from a classifier
+# that randomly guesses the label for a binary class. 
+plt.plot([0, 1], [0, 1], color='navy', lw=3, linestyle='--')
+plt.axes().set_aspect('equal')
+plt.show()
+plt.savefig('output1.png', dpi=300)
+```
+
+![output1](http://url/a.png)
