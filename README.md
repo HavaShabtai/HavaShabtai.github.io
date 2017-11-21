@@ -73,6 +73,7 @@ The predictions will be given as the probability that the corresponding blight t
 The evaluation metric for this project is the Area Under the ROC Curve (AUC). 
 
 The performance of the classifier will be tested based on the AUC score computed for the classifier. The goal of this project is to get AUC_score > 0.7.
+
 ___
 
 For this project, a function is created that trains a model to predict blight ticket compliance in Detroit using `train.csv`. Using this model, it returns a series of length 61001 with the data being the probability that each corresponding ticket from `test.csv` will be paid, and the index being the ticket_id.
@@ -286,7 +287,7 @@ plt.axes().set_aspect('equal')
 plt.show()
 ```
 
-![output1](https://github.com/HavaShabtai/HavaShabtai.github.io/blob/master/output1.png)
+![output1](https://blob/master/output1.png)
 
 <br>
 the AUC_score is 0.82 for the training data, so it seems that this classifier has the potential to get to our goal, it's time to engage the second phase, checking the classifier on the test data.
