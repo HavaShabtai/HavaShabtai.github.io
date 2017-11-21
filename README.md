@@ -1,6 +1,6 @@
 # Mag. Hava Shabtai Data Scientist Portfolio 
 [LinkedIn
-profile](https://www.linkedin.com/in/hava-shabtai/)  <h1>
+profile](https://www.linkedin.com/in/hava-shabtai/)  
 
 # Understanding and Predicting Property Maintenance Fines in Detroit City
 
