@@ -284,7 +284,143 @@ plt.legend(loc='lower right', fontsize=13)
 plt.plot([0, 1], [0, 1], color='navy', lw=3, linestyle='--')
 plt.axes().set_aspect('equal')
 plt.show()
-plt.savefig('output1.png', dpi=300)
+```
+
+![output1](https://github.com/HavaShabtai/HavaShabtai.github.io/blob/master/output1.png)
+
+<br>
+the AUC_score is 0.82 for the training data, so it seems that this classifier has the potential to get to our goal, it's time to engage the second phase, checking the classifier on the test data.
+<br>
+
+## PART II: Run the classifier on the provided test file and calculate the 'AUC_score'
+
+<br>
+The original test file that was provided by the course from the Michigan University didn't provided the label space for the test.csv file, since the requirement of the project was for the model to give a prediction of the label space. However, I would like to be able to compare it to the real label space and create the ROC curve, so I have used the information from Detroit City's website.
+<br>
+
+```python
+# 1. Read the test file, organize the test file and merge it with the Blight_Violations file in order to get the label feature.
+
+# read the test data of blight ticket compliance in Detroit into a dataframe 
+test_df = pd.read_csv('test.csv', header=0, sep=',', encoding='cp1252',  
+                 dtype={'zip_code': str, 'non_us_str_code': str, 'grafitti_status': str, 'violator_name':str, 'mailing_address_str_number': str})
+# since: DtypeWarning: Columns (11,12,31) have mixed types. Specify dtype option on import or set low_memory=False.
+#  interactivity=interactivity, compiler=compiler, result=result)
+# we have to specify the type, i.e  dtype={'zip_code': str, 'non_us_str_code': str, 'grafitti_status': str}
+# encoding='latin1', encoding='iso-8859-1' or encoding='cp1252'; encoding = utf-8 these the various encodings found on Windows.
+
+# handling the unwanted characters: remove '>' in 'mailing_address_str_name'
+test_df['mailing_address_str_name'] = test_df['mailing_address_str_name'].str.replace(r"\>"," ")
+test_df['violator_name'] = test_df['violator_name'].str.replace(r"\>"," ")
+
+# let's see the data
+# test_df.head()
+
+# read the Detroit Blight-Violations Records into a dataframe 
+# taken from the website: https://data.detroitmi.gov/Property-Parcels/Blight-Violations/ti6p-wcg4
+Blight_df = pd.read_csv('Blight_Violations.csv', header=0, sep=',', encoding='cp1252',  
+                 dtype={'zip_code': str, 'non_us_str_code': str, 'grafitti_status': str, 'violator_name':str, 
+                        'mailing_address_str_number': str, 'Violation Zip Code': str,
+                       'Violation Date': str, 'Ticket Issued Time': str})
+# since: DtypeWarning: Columns (11,12,31) have mixed types. Specify dtype option on import or set low_memory=False.
+#  interactivity=interactivity, compiler=compiler, result=result)
+# we have to specify the type, i.e  dtype={'zip_code': str, 'non_us_str_code': str, 'grafitti_status': str}
+# encoding='latin1', encoding='iso-8859-1' or encoding='cp1252'; encoding = utf-8 these the various encodings found on Windows.
+
+# let's see the data
+# df.head(20)
+
+# merge the two df in order to get the label column for the test file
+test_df_compliance = pd.merge(test_df, Blight_df, how='inner', left_on = 'ticket_id', right_on = 'Ticket ID')
+
+# Missing values is taken as float, whereas others are str. replace the NaN to ''
+test_df_compliance['Payment Status'] = test_df_compliance['Payment Status'].fillna('')
+
+# change the name of the column of the y_test - the label column
+test_df_compliance.rename(columns={'Payment Status': 'payment_status'}, inplace=True)
+# make a binary dictionary to label correctly the label column for the roc_curve to accept
+dict = {'': 0.0, 'NO PAYMENT DUE': 1.0, 'PAID IN FULL': 1.0, 'PARTIAL PAYMENT APPLIED': 0.0}
+test_df_compliance.payment_status.replace(dict, inplace=True)
+
+# let's see the data
+# test_df_compliance.head()
+
+# Build the feature space and the label space
+X_testfile = test_df_compliance.loc[:,'ticket_id':'judgment_amount'] # selects all rows and all columns beginning at 'ticket_id' up to and including 'judgment_amount' 
+X_testfile['grafitti_status'] = test_df_compliance['grafitti_status'] # add 'grafitti_status'
+y_testfile = test_df_compliance['payment_status'].as_matrix() # create the label space
+
+#y_testfile = pd.DataFrame(data = test_df_compliance['payment_status'], index = test_df_compliance.index) # create the label space
+
+# let's see the data
+# X_testfile.head()
+y_testfile
+# array([ 0.,  0.,  0., ...,  0.,  0.,  0.])
+```
+
+```
+array([ 0.,  0.,  0., ...,  0.,  0.,  0.])
+```
+
+```python
+# 2. Engage the classifier on the feature space of the test.csv file.
+
+# can't pass str to the fit() method of GBTC hence encode every labels in the df with value between 0 and n_classes-1  
+
+# Missing values is taken as float, whereas others are str. replace the NaN to ''
+X_testfile = X_testfile.fillna('')
+
+# limit to categorical data using DataFrame.select_dtypes()
+X_3 = X_testfile.select_dtypes(include=[object])
+# X_testfile.head()
+
+# encode labels with value between 0 and n_classes-1.
+le = preprocessing.LabelEncoder()
+
+
+# fit and transform
+# use DataFrame.apply() to apply le.fit_transform to all columns
+X_4 = X_3.apply(le.fit_transform)
+# X_4.head(50)
+
+# add the rest of the data
+###float_columns = ['ticket_id', 'violation_street_number', 'fine_amount', 'admin_fee', 'state_fee', 'late_fee',
+###                 'discount_amount', 'clean_up_cost', 'judgment_amount']
+
+X_4[float_columns] = X_testfile[float_columns]
+# X_4.head(10)
+# 10 rows × 27 columns
+
+# predict the probability that each corresponding ticket from test.csv will be paid, this is the part where the GBDT is engaged
+y_testfile_pred_grd = grd.predict_proba(X_4)[:, 1]
+# y_testfile_pred_grd
+# array([ 0.54017691,  0.41656027,  0.54975157, ...,  0.80806118,
+#         0.79647891,  0.98836275])
+```
+
+```python
+# 3. Plot the ROC for the y_test that was gathered from the test.csv file.
+
+# calculate the needed information in order to get the AUC_score
+# y_testfile_pred_grd = grd.predict_proba(X_4)[:, 1] # already been calculated
+fpr_grd, tpr_grd, _ = roc_curve(y_testfile, y_testfile_pred_grd)
+roc_auc_grd = auc(fpr_grd, tpr_grd)
+
+################################################# plot the ROC for the y_test #####################
+
+plt.figure()
+plt.xlim([-0.01, 1.00])
+plt.ylim([-0.01, 1.01])
+plt.plot(fpr_grd, tpr_grd, lw=3, label='LogRegr ROC curve (area = {:0.2f})'.format(roc_auc_grd))
+plt.xlabel('False Positive Rate', fontsize=16)
+plt.ylabel('True Positive Rate', fontsize=16)
+plt.title('ROC curve test file (blight ticket compliance in Detroit)', fontsize=16)
+plt.legend(loc='lower right', fontsize=13)
+# The dotted line here is the classifier curve that secretly results from a classifier
+# that randomly guesses the label for a binary class. 
+plt.plot([0, 1], [0, 1], color='navy', lw=3, linestyle='--')
+plt.axes().set_aspect('equal')
+plt.show()
 ```
 
 ![output1](https://github.com/HavaShabtai/HavaShabtai.github.io/blob/master/output1.png)
