@@ -423,4 +423,125 @@ plt.axes().set_aspect('equal')
 plt.show()
 ```
 
-![output1](https://github.com/HavaShabtai/HavaShabtai.github.io/blob/master/output1.png)
+![output2](https://github.com/HavaShabtai/HavaShabtai.github.io/blob/master/output2.png)
+
+<br>
+As seen in the graph, the classifier completed the task with AUC_score > 0.7
+<br>
+
+```python
+# 4. returns a series of length 61001 with the data being the probability that each corresponding ticket from test.csv 
+# will be paid, and the index being the ticket_id.
+
+# concatenate the index and the probability to a series
+bm = pd.Series(y_testfile_pred_grd, index = test_df.ticket_id)
+bm 
+```
+
+```
+ticket_id
+284932    0.492514
+285362    0.640645
+285361    0.572208
+285338    0.702948
+285346    0.589072
+285345    0.477104
+285347    0.579763
+285342    0.786485
+285530    0.368988
+284989    0.418317
+285344    0.605223
+285343    0.470653
+285340    0.407367
+285341    0.561807
+285349    0.551656
+285348    0.444555
+284991    0.650978
+285532    0.427306
+285406    0.441733
+285001    0.667024
+285006    0.417840
+285405    0.622072
+285337    0.416695
+285496    0.774379
+285497    0.702948
+285378    0.377988
+285589    0.650978
+285585    0.696290
+285501    0.572520
+285581    0.640645
+            ...   
+376367    0.127060
+376366    0.176512
+376362    0.181165
+376363    0.211099
+376365    0.127060
+376364    0.176512
+376228    0.176512
+376265    0.200328
+376286    0.853411
+376320    0.170111
+376314    0.181785
+376327    0.843864
+376385    0.849403
+376435    0.841925
+376370    0.853932
+376434    0.383837
+376459    0.224316
+376478    0.076851
+376473    0.186545
+376484    0.137369
+376482    0.134581
+376480    0.162030
+376479    0.162030
+376481    0.162030
+376483    0.209237
+376496    0.097881
+376497    0.097881
+376499    0.231464
+376500    0.229897
+369851    0.835356
+Length: 61001, dtype: float64
+```
+
+```python
+# given test script to test the outcome by size, type etc.
+
+
+res = 'Data type Test: '
+res += ['Failed: type(bm) should Series\n','Passed\n'][type(bm)==pd.Series]
+res += 'Data shape Test: '
+res += ['Failed: len(bm) should be 61001\n','Passed\n'][len(bm)==61001]
+res += 'Data Values Test: '
+res += ['Failed: all values should be in [0.,1.]\n','Passed\n'][all((bm<=1.) & (bm>=0.))]
+res += 'Data Values type Test: '
+res += ['Failed: bm.dtype should be float\n','Passed\n'][str(bm.dtype).count('float')>0]
+res += 'Index type Test: '
+res += ['Failed: type(bm.index) should be Int64Index\n','Passed\n'][type(bm.index)==pd.Int64Index]
+res += 'Index values type Test: '
+res += ['Failed: type(bm.index[0]) should be int64\n','Passed\n'][str(type(bm.index[0])).count("int64")>0]
+
+res += 'Output index shape test:'
+res += ['Failed, bm.index.shape should be (61001,)\n','Passed\n'][bm.index.shape==(61001,)]
+
+res += 'Output index test: '
+if bm.index.shape==(61001,):
+    res +=['Failed\n','Passed\n'][all(pd.read_csv('test.csv',usecols=[0],index_col=0).sort_index().index.values==bm.sort_index().index.values)]
+else:
+    res+='Failed'
+print(res)
+```
+
+```
+Data type Test: Passed
+Data shape Test: Passed
+Data Values Test: Passed
+Data Values type Test: Passed
+Index type Test: Passed
+Index values type Test: Passed
+Output index shape test:Passed
+Output index test: Passed
+```
+
+## Conclusion
+In conclusion, I had an imbalanced classification problem for which I used a Gradient Boosted Decision Trees. Because of the imbalanced situation the classifier was tested with the AUC_score and gave score above the wanted goal, so technically it can be used for that problem.  
