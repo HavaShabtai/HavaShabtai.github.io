@@ -287,7 +287,7 @@ plt.axes().set_aspect('equal')
 plt.show()
 ```
 
-![output1](https://github.com/HavaShabtai/HavaShabtai.github.io/blob/master/output1.png)
+![output1](output1.png)
 
 <br>
 the AUC_score is 0.82 for the training data, so it seems that this classifier has the potential to get to our goal, it's time to engage the second phase, checking the classifier on the test data.
@@ -424,7 +424,7 @@ plt.axes().set_aspect('equal')
 plt.show()
 ```
 
-![output2](https://github.com/HavaShabtai/HavaShabtai.github.io/blob/master/output2.png)
+![output2](output2.png)
 
 <br>
 As seen in the graph, the classifier completed the task with AUC_score > 0.7
