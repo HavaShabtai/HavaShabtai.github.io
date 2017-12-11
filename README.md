@@ -102,7 +102,7 @@ PART I: Build the classifier and run it on the provided training data
 2. read the needed files into a dataframe, then organize and fix the dataframes from small problems, i.e. mixed types value an etc. Afterward build the feature space and the label space.
 3. Appraise the problem beforehand to decide whether it is an imbalanced classification problem or not.
 4. Decide which classifier to use, organize the feature space and the label space appropriately and engage the classifier.
-5. Plot the ROC for the y_test that was splitted from the training data train.csv file.
+5. Plot the ROC for the y_test that was splitted from the training data train.csv file, the "Hold Out" data set.
 
 PART II: Run the classifier on the provided test file and calculate the 'AUC_score' 
 
@@ -228,8 +228,6 @@ X_2 = X_1.apply(le.fit_transform)
 
 # add the rest of the data that is already in a float or int type
 float_columns = ['ticket_id', 'violation_street_number', 'fine_amount', 'admin_fee', 'state_fee', 'late_fee',
-                 'discount_amount', 'clean_up_cost', 'judgment_amount']
-float_columns = ['fine_amount', 'admin_fee', 'state_fee', 'late_fee',
                  'discount_amount', 'clean_up_cost', 'judgment_amount']
 X_2[float_columns] = X[float_columns]
 
