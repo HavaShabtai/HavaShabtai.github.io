@@ -4,8 +4,8 @@
 ## List of projects in Python
 <div class="tabs">
 <ul class="tab-links">
-<li class="active"><a href="Understanding and Predicting Property Maintenance Fines in Detroit City">Tab #1</a></li>
-<li><a href="Visualizing Energy Consumption in the Netherlands by Energy commodities over the years 1970-2016">Tab #2</a></li>
+<li class="active"><a href="#tab1">Understanding and Predicting Property Maintenance Fines in Detroit City</a></li>
+<li><a href="#tab2">Visualizing Energy Consumption in the Netherlands by Energy commodities over the years 1970-2016</a></li>
 </ul>
 <div class="tab-content">
 <div id="tab1" class="tab active">
