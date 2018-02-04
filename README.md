@@ -4,31 +4,13 @@
 ## List of projects in Python
 <div class="tabs">
 <ul class="tab-links">
-<li class="active"><a href="#tab1">Understanding and Predicting Property Maintenance Fines in Detroit City</a></li>
-<li><a href="#tab2">Visualizing Energy Consumption in the Netherlands by Energy commodities over the years 1970-2016</a></li>
+<li class="active"><a href="#tab1">Predicting Blight Fines in Detroit City</a></li>
+<li><a href="#tab2">Visualizing Energy Consumption in the Netherlands</a></li>
 </ul>
 <div class="tab-content">
 <div id="tab1" class="tab active">
-<p>Tab #1 content goes here!</p>
-<p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis.</p>
-</div>
-<div id="tab2" class="tab">
-<p>Tab #2 content goes here!</p>
-<p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis. In hac habitasse platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis vel.</p>
-</div>
-<div id="tab3" class="tab">
-<p>Tab #3 content goes here!</p>
-<p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum ri.</p>
-</div>
-<div id="tab4" class="tab">
-<p>Tab #4 content goes here!</p>
-<p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis. In hac habitasse platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis vel.</p>
-</div>
-</div>
-</div>
-
-# Understanding and Predicting Property Maintenance Fines in Detroit City
-
+<p># Understanding and Predicting Property Maintenance Fines in Detroit City</p>
+<p>
 This project is based on a data challenge from the Michigan Data Science Team ([MDST](http://midas.umich.edu/mdst/)). It's the fourth assignment from the course 'Applied Machine Learning in Python' of University of Michigan, taken through coursera.
 
 The Michigan Data Science Team ([MDST](http://midas.umich.edu/mdst/)) and the Michigan Student Symposium for Interdisciplinary Statistical Sciences ([MSSISS](https://sites.lsa.umich.edu/mssiss/)) have partnered with the City of Detroit to help solve one of the most pressing problems facing Detroit - blight. [Blight violations](http://www.detroitmi.gov/How-Do-I/Report/Blight-Complaint-FAQs) are issued by the city to individuals who allow their properties to remain in a deteriorated condition. Every year, the city of Detroit issues millions of dollars in fines to residents and every year, many of these fines remain unpaid. Enforcing unpaid blight fines is a costly and tedious process, so the city wants to know: how can we increase blight ticket compliance?
@@ -570,3 +552,11 @@ Output index test: Passed
 
 ## Conclusion
 In conclusion, I had an imbalanced classification problem for which I used a Gradient Boosted Decision Trees. Because of the imbalanced situation the classifier was tested with the AUC_score and gave score above the wanted goal, so technically it can be used for that problem.  
+</p>
+</div>
+<div id="tab2" class="tab">
+<p>Tab #2 content goes here!</p>
+<p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis. In hac habitasse platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis vel.</p>
+</div>
+</div>
+</div>
