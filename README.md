@@ -29,55 +29,6 @@
 </div>
 </div>
 
-/*----- Tabs -----*/
-.tabs {
-width:100%;
-display:inline-block;
-}
-/*----- Tab Links -----*/
-/* Clearfix */
-.tab-links:after {
-display:block;
-clear:both;
-content:'';
-}
-.tab-links li {
-margin:0px 5px;
-float:left;
-list-style:none;
-}
-.tab-links a {
-padding:9px 15px;
-display:inline-block;
-border-radius:3px 3px 0px 0px;
-background:#7FB5DA;
-font-size:16px;
-font-weight:600;
-color:#4c4c4c;
-transition:all linear 0.15s;
-}
-.tab-links a:hover {
-background:#a7cce5;
-text-decoration:none;
-}
-li.active a, li.active a:hover {
-background:#fff;
-color:#4c4c4c;
-}
-/*----- Content of Tabs -----*/
-.tab-content {
-padding:15px;
-border-radius:3px;
-box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
-background:#fff;
-}
-.tab {
-display:none;
-}
-.tab.active {
-display:block;
-}
-
 # Understanding and Predicting Property Maintenance Fines in Detroit City
 
 This project is based on a data challenge from the Michigan Data Science Team ([MDST](http://midas.umich.edu/mdst/)). It's the fourth assignment from the course 'Applied Machine Learning in Python' of University of Michigan, taken through coursera.
