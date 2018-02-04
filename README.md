@@ -1,13 +1,11 @@
 # Data Scientist Portfolio
 ## Hava Shabtai, MSc.
 [LinkedIn profile](https://www.linkedin.com/in/hava-shabtai/)
-
+## List of projects in Python
 <div class="tabs">
 <ul class="tab-links">
-<li class="active"><a href="#tab1">Tab #1</a></li>
-<li><a href="#tab2">Tab #2</a></li>
-<li><a href="#tab3">Tab #3</a></li>
-<li><a href="#tab4">Tab #4</a></li>
+<li class="active"><a href="Understanding and Predicting Property Maintenance Fines in Detroit City">Tab #1</a></li>
+<li><a href="Visualizing Energy Consumption in the Netherlands by Energy commodities over the years 1970-2016">Tab #2</a></li>
 </ul>
 <div class="tab-content">
 <div id="tab1" class="tab active">
