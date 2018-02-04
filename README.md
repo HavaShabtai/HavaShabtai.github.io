@@ -1,5 +1,5 @@
 # Data Scientist Portfolio
-## Hava Shabtai, MSc.
+## Hava Shabtai, MSc. BLA BLA
 [LinkedIn profile](https://www.linkedin.com/in/hava-shabtai/)
 
 <div class="tabs">
